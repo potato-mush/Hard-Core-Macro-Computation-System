@@ -1,0 +1,230 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  background-size: cover;
+}
+
+.navbar {
+  position: absolute; /* Keep the navbar on top of the section */
+  width: 80%; /* Set width to 80% of the section */
+  top: 8%;
+  left: 50%; /* Position the navbar in the center */
+  transform: translateX(-50%); /* Offset to exactly center the navbar */
+  padding: 25px;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  border: #572C57 solid 1px;
+  border-radius: 5px;
+  text-align: center;
+  z-index: 1; /* Ensure the navbar stays on top of the content */
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 230px;
+}
+
+.nav-buttons a {
+  text-decoration: none;
+  color: #572C57;
+  padding: 15px 80px;
+  background-color: #fff;
+  border-radius: 12px;
+  transition: background-color 0.3s;
+}
+
+.nav-buttons a:hover {
+  background-color: #777;
+}
+
+#mealPlanSection {
+  background-image: url("images/u1.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.meal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px 0;
+  margin-top: 200px;
+}
+
+.meal-day {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  margin-bottom: 40px;
+  gap: 20px;
+  text-align: left;
+  align-items: center;
+  justify-content: center;
+}
+
+.meal-plan {
+  background-color: rgba(0, 0, 0, 0.65);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 60px;
+  width: 70%;
+  color: #f4f4f4;
+  font-size: 21px;
+}
+
+.meal-plan h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #f6ea98;
+}
+
+.meal-plan ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.meal-plan ul li {
+  margin-bottom: 10px;
+}
+
+.meal-image {
+  width: 30%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.meal-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Alternate layout for meal and image */
+.meal-day:nth-child(odd) .meal-plan {
+  order: 1;
+}
+
+.meal-day:nth-child(odd) .meal-image {
+  order: 2;
+}
+
+.meal-day:nth-child(even) .meal-plan {
+  order: 2;
+}
+
+.meal-day:nth-child(even) .meal-image {
+  order: 1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .meal-day {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .meal-plan {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .meal-image {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+.general-tips {
+  width: 80%;
+  /* Adjust the width of the tips section */
+  max-width: 800px;
+  /* Optional: Limit the maximum width */
+  background-color: #faff06;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 40px auto;
+  /* Centers the container horizontally */
+  text-align: center;
+  /* Center the text inside the container */
+}
+
+.general-tips h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 20px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+}
+
+.general-tips ul {
+  font-size: 21px;
+  line-height: 2;
+  text-align: left;
+}
+
+.tip-icon {
+  margin-left: 18px;
+  /* Adds space between the icon and the text */
+  font-size: 30px;
+  /* Adjust size of the icon */
+  color: #f39c12;
+  /* Optional: Change the color of the icon */
+}
+
+#workoutPlanSection {
+  background-image: url("images/u2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.workout-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px 0;
+  margin-top: 200px;
+}
+
+.workout-day {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  margin-bottom: 40px;
+  gap: 20px;
+  text-align: left;
+  align-items: center;
+  justify-content: center;
+}
+
+.workout-plan {
+  background-color: rgba(0, 0, 0, 0.65);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px 60px;
+  width: 70%;
+  color: #f4f4f4;
+  font-size: 21px;
+}
+
+.workout-plan h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #f6ea98;
+}
+
+.workout-image {
+  width: 30%;
+  margin-left: 20px;
+}
+
+.workout-image img {
+  width: 100%;
+  border-radius: 10px;
+  padding: 20px;
+}
