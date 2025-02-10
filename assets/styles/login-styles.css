@@ -1,0 +1,260 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../images/bg1.png');
+    margin: 0;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    width: 70%;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 3px dashed #000;
+    overflow: hidden;
+}
+
+/* Both form boxes (left and right) */
+.form-box {
+    width: 50%;
+    padding: 60px;
+    position: relative;
+    transition: transform 0.5s ease;
+}
+
+.form-box h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 2rem;
+}
+
+.form-box p {
+    text-align: center;
+    margin-bottom: 80px;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.form-box form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-box label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-box input {
+    font-size: 18px;
+    padding: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #000;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-box button {
+    text-transform: uppercase;
+    padding: 14px 60px;
+    background-color: #FAFF06;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    align-self: center;
+}
+
+.form-box button:hover {
+    background-color: #d8dc07;
+}
+
+.form-box a {
+    position: relative;
+    justify-content: right;
+    text-align: right;
+    margin: 14px 0;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.form-box a:hover {
+    text-decoration: underline;
+}
+
+.form-box .form-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.form-box .form-footer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.form-box .form-footer label {
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.form-box .form-footer input {
+    margin-top: 14px;
+    margin-right: 5px;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    padding: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #000;
+    width: 100%;
+    padding-right: 50px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 20px;
+    top: 37%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #888;
+    cursor: pointer;
+}
+
+.toggle-password:hover {
+    color: #555;
+}
+
+.terms-checkbox {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.terms-checkbox input {
+    margin: 8px;
+}
+
+.terms-checkbox label {
+    font-size: 14px;
+    color: #555;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.terms-checkbox a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* Cover div */
+.cover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    background-image: url('../images/arrow.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+    transition: transform 0.5s ease;
+}
+
+.cover p {
+    color: #555;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    max-width: 500px;
+}
+
+.cover .toggle-btn {
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0);
+    font-size: 1.1rem;
+    padding: 20px 60px;
+    border: 3px solid #000;
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3), inset 3px 3px 15px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 3;
+    text-transform: uppercase;
+}
+
+/* Nested content element inside cover */
+.cover .cover-header,.cover button {
+    transform: scaleX(1);
+    /* No flip by default */
+    transition: transform 0.5s ease;
+    /* Smooth transition for nested content */
+}
+
+/* Slide effect when toggling */
+.cover.slide-left {
+    transform: translateX(-90%) scaleX(1);
+    /* No flip for outer cover */
+}
+
+.cover.slide-right {
+    transform: translateX(0%) scaleX(-1);
+    /* Flip outer cover */
+}
+
+/* Flip effect applied only to the outer container */
+.cover.slide-right .cover-header,.cover button {
+    transform: scaleX(-1);
+    /* Flip the content back inside */
+}
+
+.cover.slide-left button {
+    transform: scaleX(1);
+    /* Flip the content back inside */
+}
+
+/* Header Style for "Already Signed Up?" and "Don't Have an account Yet?" */
+.cover-header {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #000;
+    margin-bottom: 20px;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.cover-header span {
+    display: block;
+    font-size: 2.5rem;
+    color: #000;
+    margin-top: 10px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}

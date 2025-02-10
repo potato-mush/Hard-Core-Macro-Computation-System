@@ -1,0 +1,297 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #444;
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 10px 20px;
+  width: 80%; /* Adjust width to not cover the entire page */
+  margin: 20px auto; /* Adds margin at the top and centers the header */
+  border-radius: 10px; /* Optional: Adds rounded corners for better design */
+  border: 3px solid #fffc04;
+  position: relative;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.header h1 {
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
+  color: #fffc04;
+  font-size: 4rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #fffc04;
+  font-size: 36px;
+  cursor: pointer;
+  position: absolute;
+  left: 50px;
+}
+
+.progress-navigation {
+  position: relative;
+  width: 80%;
+  margin: 10px 0;
+}
+
+.progress-navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0;
+  position: relative;
+}
+
+.progress-bar-container {
+  width: 80%;
+  height: 8px;
+  background-color: #ddd;
+  position: relative;
+  margin-top: 36px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #fffc04;
+  width: 0;
+  transition: width 0.3s ease;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.progress-steps {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.progress-steps button {
+  background: #fff;
+  border: none;
+  color: #444;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+/* Position each step exactly at 1/6 intervals */
+.progress-steps button:nth-child(1) {
+  left: 0%;
+}
+.progress-steps button:nth-child(2) {
+  left: 20%;
+}
+.progress-steps button:nth-child(3) {
+  left: 40%;
+}
+.progress-steps button:nth-child(4) {
+  left: 60%;
+}
+.progress-steps button:nth-child(5) {
+  left: 80%;
+}
+.progress-steps button:nth-child(6) {
+  left: 100%;
+}
+
+.progress-steps button.active {
+  background-color: #fffc04;
+  border-color: #fffc04;
+}
+
+/* Center the sections */
+.section-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Make sections fill the available space */
+.section {
+  display: none;
+  width: 80%;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.section h2 {
+  font-size: 3rem;
+  color: #fff;
+}
+
+/* Ensure active section is visible */
+.section.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Align buttons vertically */
+.gender-buttons,
+.fitness-goal-buttons,
+.fitness-level-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+}
+
+/* Style individual buttons */
+.gender-buttons button,
+.fitness-goal-buttons button,
+.fitness-level-buttons button {
+  width: 80%;
+  padding: 50px;
+  background-color: #fffc04;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 2rem;
+}
+
+.gender-buttons button:hover,
+.fitness-goal-buttons button:hover,
+.fitness-level-buttons button:hover {
+  background-color: #f8ec9c;
+  color: #5a3559;
+}
+
+/* Active button styling */
+.gender-buttons button.active,
+.fitness-goal-buttons button.active,
+.fitness-level-buttons button.active {
+  background-color: #007bff;
+}
+
+.age-container {
+  width: 100%;
+  padding: 20px;
+  border: 2px solid #fffc04;
+  text-align: left;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.section .confirmBtn {
+  padding: 20px;
+  background-color: #fffc04;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.section p {
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.age-slider {
+  width: 100%;
+  margin: 10px;
+}
+
+.weight-height-inputs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  margin-top: 10px;
+}
+
+.weight-height-inputs input {
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 20px;
+  width: 100%;
+}
+
+.macro-ratio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.macro-ratio input {
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 20px;
+  width: 100%;
+}
+
+.muscle-group-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+}
+
+.modal-content button {
+  margin: 5px;
+  padding: 10px 20px;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content button.active {
+  background-color: #007bff;
+}
