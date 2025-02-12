@@ -27,6 +27,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
     }
 }
 
+// Handle the add user action (if add user form is submitted)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_user'])) {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $role = $_POST['role'];
+
+    // Insert new user into the database
+    $stmt = $pdo->prepare("INSERT INTO tbl_users (name, email, password, role) VALUES (:name, :email, :password, :role)");
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':password', $password);
+    $stmt->bindParam(':role', $role);
+    $stmt->execute();
+
+    // Reload the page to reflect changes
+    header('Location: dashboard.php');
+    exit();
+}
+
 // Pagination setup
 $items_per_page = 8;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -192,7 +212,7 @@ $total_pages = ceil($total_users / $items_per_page);
         <div class="d-flex justify-content-between mb-3">
             <!-- Add User Button -->
             <div>
-                <a href="register.php" class="btn btn-blue-no-radius text-white">Add New User</a>
+                <button class="btn btn-blue-no-radius text-white" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</button>
             </div>
 
             <!-- Search Bar and Delete Button at the right -->
@@ -253,6 +273,9 @@ $total_pages = ceil($total_users / $items_per_page);
             <a href="?page=<?php echo $total_pages; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>" class="<?php echo ($page == $total_pages) ? 'disabled' : ''; ?>">Last</a>
         </div>
     </div>
+
+    <!-- Add User Modal -->
+    <?php include('addUser.php'); ?>
 
     <!-- Bootstrap 5 JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

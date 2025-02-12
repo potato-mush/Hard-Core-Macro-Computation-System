@@ -26,12 +26,12 @@
 
         <!-- Progress Steps -->
         <div class="progress-steps">
-            <button onclick="showSection(0)"><i class="fas fa-venus-mars"></i></button>
-            <button onclick="showSection(1)"><i class="fas fa-birthday-cake"></i></button>
-            <button onclick="showSection(2)"><i class="fas fa-bullseye"></i></button>
-            <button onclick="showSection(3)"><i class="fas fa-running"></i></button>
-            <button onclick="showSection(4)"><i class="fas fa-weight"></i></button>
-            <button onclick="showSection(5)"><i class="fas fa-dumbbell"></i></button>
+            <button><i class="fas fa-venus-mars"></i></button>
+            <button><i class="fas fa-birthday-cake"></i></button>
+            <button><i class="fas fa-bullseye"></i></button>
+            <button><i class="fas fa-running"></i></button>
+            <button><i class="fas fa-weight"></i></button>
+            <button><i class="fas fa-dumbbell"></i></button>
         </div>
     </div>
 
@@ -80,19 +80,19 @@
         <div class="section">
             <h2>Weight and Height</h2>
             <div class="weight-height-inputs">
-                <input type="number" placeholder="Weight (kg)" id="weightInput">
-                <input type="number" placeholder="Height (cm)" id="heightInput">
+                <input type="number" placeholder="Weight (kg)" id="weightInput" required>
+                <input type="number" placeholder="Height (cm)" id="heightInput" required>
             </div>
-            <button class="confirmBtn" onclick="confirmWeightHeight()">Confirm</button>
+            <button class="confirmBtn" onclick="confirmWeightHeight()" disabled>Confirm</button>
         </div>
 
         <!-- Macro Ratio and Muscle Group Section -->
         <div class="section">
             <h2>Macro Ratio and Muscle Group</h2>
             <div class="macro-ratio">
-                <input type="number" placeholder="Carbohydrate (%)" id="carbInput">
-                <input type="number" placeholder="Protein (%)" id="proteinInput">
-                <input type="number" placeholder="Fats (%)" id="fatsInput">
+                <input type="text" placeholder="Carbohydrate grams/day" id="carbInput" disabled>
+                <input type="text" placeholder="Protein grams/day" id="proteinInput" disabled>
+                <input type="text" placeholder="Fats grams/day" id="fatsInput" disabled>
             </div>
             <button class="muscle-group-button" onclick="openModal()">Select Muscle Group</button>
         </div>
@@ -101,16 +101,18 @@
     <!-- Muscle Group Modal -->
     <div class="modal" id="muscleGroupModal">
         <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></button>
             <h3>Select Muscle Group</h3>
-            <button onclick="selectMuscleGroup('Upper Body Push')">Upper Body Push</button>
-            <button onclick="selectMuscleGroup('Upper Body Pull')">Upper Body Pull</button>
-            <button onclick="selectMuscleGroup('Lower Body Push')">Lower Body Push</button>
-            <button onclick="selectMuscleGroup('Lower Body Pull')">Lower Body Pull</button>
-            <button onclick="selectMuscleGroup('Core')">Core</button>
-            <button onclick="selectMuscleGroup('Shoulders')">Shoulders</button>
-            <button onclick="selectMuscleGroup('Arms')">Arms</button>
-            <button onclick="selectMuscleGroup('Full Body')">Full Body</button>
-            <button onclick="closeModal()">Close</button>
+            <div class="muscle-group-buttons">
+                <button onclick="selectMuscleGroup('Upper Body Push')">Upper Body Push</button>
+                <button onclick="selectMuscleGroup('Upper Body Pull')">Upper Body Pull</button>
+                <button onclick="selectMuscleGroup('Lower Body Push')">Lower Body Push</button>
+                <button onclick="selectMuscleGroup('Lower Body Pull')">Lower Body Pull</button>
+                <button onclick="selectMuscleGroup('Core')">Core</button>
+                <button onclick="selectMuscleGroup('Shoulders')">Shoulders</button>
+                <button onclick="selectMuscleGroup('Arms')">Arms</button>
+                <button onclick="selectMuscleGroup('Full Body')">Full Body</button>
+            </div>
         </div>
     </div>
 
@@ -122,6 +124,9 @@
         const ageSlider = document.getElementById('ageSlider');
         const ageValue = document.getElementById('ageValue');
         const muscleGroupModal = document.getElementById('muscleGroupModal');
+        const weightInput = document.getElementById('weightInput');
+        const heightInput = document.getElementById('heightInput');
+        const weightHeightConfirmBtn = document.querySelector('.section:nth-child(5) .confirmBtn');
 
         function showSection(index) {
             sections.forEach((section, i) => {
@@ -148,28 +153,39 @@
             document.querySelectorAll('.gender-buttons button').forEach(button => button.classList.remove('active'));
             event.target.classList.add('active');
             console.log('Selected Gender:', gender);
+            localStorage.setItem('gender', gender);
+            showSection(currentSection + 1);
         }
 
         function selectFitnessGoal(goal) {
             document.querySelectorAll('.fitness-goal-buttons button').forEach(button => button.classList.remove('active'));
             event.target.classList.add('active');
             console.log('Selected Fitness Goal:', goal);
+            localStorage.setItem('fitness_goal', goal);
+            showSection(currentSection + 1);
         }
 
         function selectFitnessLevel(level) {
             document.querySelectorAll('.fitness-level-buttons button').forEach(button => button.classList.remove('active'));
             event.target.classList.add('active');
             console.log('Selected Fitness Level:', level);
+            localStorage.setItem('fitness_level', level);
+            showSection(currentSection + 1);
         }
 
         function confirmAge() {
             console.log('Confirmed Age:', ageSlider.value);
+            localStorage.setItem('age', ageSlider.value);
+            showSection(currentSection + 1);
         }
 
         function confirmWeightHeight() {
-            const weight = document.getElementById('weightInput').value;
-            const height = document.getElementById('heightInput').value;
+            const weight = weightInput.value;
+            const height = heightInput.value;
             console.log('Weight:', weight, 'Height:', height);
+            localStorage.setItem('weight', weight);
+            localStorage.setItem('height', height);
+            showSection(currentSection + 1);
         }
 
         function openModal() {
@@ -182,8 +198,44 @@
 
         function selectMuscleGroup(group) {
             console.log('Selected Muscle Group:', group);
+            localStorage.setItem('muscle_group', group);
             closeModal();
+            computeMacros();
         }
+
+        function computeMacros() {
+            const gender = localStorage.getItem('gender');
+            const age = localStorage.getItem('age');
+            const fitnessGoal = localStorage.getItem('fitness_goal');
+            const fitnessLevel = localStorage.getItem('fitness_level');
+            const weight = localStorage.getItem('weight');
+            const height = localStorage.getItem('height');
+            const muscleGroup = localStorage.getItem('muscle_group');
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', 'functions/computation.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    document.getElementById('carbInput').value = `${response.carbs} grams/day`;
+                    document.getElementById('proteinInput').value = `${response.protein} grams/day`;
+                    document.getElementById('fatsInput').value = `${response.fats} grams/day`;
+                }
+            };
+            xhr.send(`gender=${gender}&age=${age}&fitness_goal=${fitnessGoal}&fitness_level=${fitnessLevel}&weight=${weight}&height=${height}&muscle_group=${muscleGroup}`);
+        }
+
+        function validateWeightHeightInputs() {
+            if (weightInput.value && heightInput.value) {
+                weightHeightConfirmBtn.disabled = false;
+            } else {
+                weightHeightConfirmBtn.disabled = true;
+            }
+        }
+
+        weightInput.addEventListener('input', validateWeightHeightInputs);
+        heightInput.addEventListener('input', validateWeightHeightInputs);
 
         ageSlider.addEventListener('input', () => {
             ageValue.textContent = ageSlider.value;
@@ -192,6 +244,7 @@
         // Initialize progress bar and active step
         updateProgressBar();
         updateActiveStep();
+        validateWeightHeightInputs();
     </script>
 </body>
 

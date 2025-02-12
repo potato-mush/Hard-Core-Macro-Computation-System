@@ -26,7 +26,7 @@ body {
   text-align: center;
   flex-grow: 1;
   color: #fffc04;
-  font-size: 4rem;
+  font-size: 3rem;
 }
 
 .back-button {
@@ -253,6 +253,12 @@ body {
   font-size: 1rem;
   padding: 20px;
   width: 100%;
+  background-color: #fff; /* Make the input background white */
+  color: #000; /* Ensure the text is visible */
+}
+
+.macro-ratio input::placeholder {
+  color: #888; /* Make the placeholder text visible */
 }
 
 .muscle-group-button {
@@ -281,6 +287,31 @@ body {
   padding: 20px;
   border-radius: 5px;
   width: 300px;
+  position: relative;
+}
+
+.modal-content .close-modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #000; /* Ensure the icon is visible */
+}
+
+.modal-content .muscle-group-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.modal-content .muscle-group-buttons button {
+  width: 80%;
+  margin: 0 auto;
 }
 
 .modal-content button {

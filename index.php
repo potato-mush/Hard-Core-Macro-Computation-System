@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,20 +34,21 @@
             <h1>HARD CORE</h1>
             <h3>MACRO COMPUTATION SYSTEM</h3>
             <p>Unlock your fitness potential with our innovative Hard Macro Computation System! Designed for gym enthusiasts of all levels, our platform takes the guesswork out of nutrition, helping you accurately calculate and track your macros. With personalized guidance and easy-to-use tools, you’ll maximize your gains and achieve your goals more efficiently than ever. Transform your workout experience and fuel your success because every rep deserves the right nutrition!</p>
-            <button class="cta-button">Calculate Now</button>
+            <?php
+            if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
+                echo '<script>console.log("User is logged in");</script>';
+                echo '<button class="cta-button" onclick="window.location.href=\'calculate.php\'">Calculate Now</button>';
+            } else {
+                echo '<script>console.log("User is not logged in");</script>';
+                echo '<button class="cta-button" onclick="window.location.href=\'login.php\'">Calculate Now</button>';
+            }
+            ?>
         </div>
     </section>
 
     <!-- Divider Section -->
     <div class="crossed-divider">
         <div class="tape">
-            <span>Stay Strong > Fight On > Never Stop > Keep Moving Forward > Be Unstoppable</span>
-        </div>
-        <div class="tape">
-            <span>Stay Strong > Fight On > Never Stop > Keep Moving Forward > Be Unstoppable</span>
-        </div>
-    </div>
-
     <!-- How It Works Section -->
     <section id="about-section" class="what-we-offer">
         <div class="content">
