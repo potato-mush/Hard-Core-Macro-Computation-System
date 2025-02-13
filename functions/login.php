@@ -20,6 +20,9 @@ function login($email, $password, $pdo) {
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_role'] = $user['role'];
 
+            // Store user_id in localStorage
+            echo "<script>localStorage.setItem('user_id', '{$user['id']}');</script>";
+
             // Update last login time
             $stmt = $pdo->prepare("UPDATE tbl_users SET last_login = NOW() WHERE id = :id");
             $stmt->bindParam(':id', $user['id']);
@@ -36,5 +39,9 @@ function login($email, $password, $pdo) {
         // Invalid email
         return 'Invalid email.';
     }
+}
+
+function isLoggedIn() {
+    return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true;
 }
 ?>

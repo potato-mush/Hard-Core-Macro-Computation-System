@@ -1,0 +1,103 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #444;
+  width: 100%;
+  height: 100%;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 25px 0;
+  color: white;
+  border: 2px solid #dee807; /* Add a 2px border around the navbar */
+  width: 80%; /* Adjust the width as needed */
+  margin: 20px auto; /* Center the navbar */
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #000;
+  background-color: #dee807;
+  padding: 10px 15px;
+  border-radius: 15px;
+}
+
+.nav-item {
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.profile-container {
+  padding: 20px;
+  width: 80%;
+  margin: 20px auto;
+  text-align: left; /* Align the text to the left */
+}
+
+.meal-plan-section,
+.workouts-section,
+.calculate-section {
+  margin-top: 20px;
+}
+
+.meal-plan-section h2,
+.workouts-section h2,
+.calculate-section h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.meal-plan-dropdown,
+.workout-plan-dropdown {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.meal-plan-dropdown select,
+.workout-plan-dropdown select {
+  padding: 5px;
+  font-size: 16px;
+}
+
+.meal-plan-content,
+.workout-plan-content {
+  background-color: #000; /* Black background for content */
+  padding: 20px;
+  border-radius: 8px;
+  color: #fff; /* White text color */
+}
+
+.meal-plan-content h3,
+.workout-plan-content h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #f7eb98;
+}
+
+.meal-type,
+.workout-type {
+  margin-bottom: 20px;
+}
+
+.meal-type h4,
+.workout-type h4 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.meal-type p,
+.workout-type p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.totals {
+  margin-top: 20px;
+}

@@ -7,43 +7,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
-    header('Location: login.php');
-    exit();
-}
-
-// Handle the delete action (if delete button is pressed)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
-    if (isset($_POST['user_ids']) && !empty($_POST['user_ids'])) {
-        $user_ids = $_POST['user_ids'];
-
-        // Delete selected users from the database
-        $placeholders = implode(',', array_fill(0, count($user_ids), '?'));
-        $stmt = $pdo->prepare("DELETE FROM tbl_users WHERE id IN ($placeholders)");
-        $stmt->execute($user_ids);
-
-        // Reload the page to reflect changes
-        header('Location: dashboard.php');
-        exit();
-    }
-}
-
-// Handle the add user action (if add user form is submitted)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_user'])) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $role = $_POST['role'];
-
-    // Insert new user into the database
-    $stmt = $pdo->prepare("INSERT INTO tbl_users (name, email, password, role) VALUES (:name, :email, :password, :role)");
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':password', $password);
-    $stmt->bindParam(':role', $role);
-    $stmt->execute();
-
-    // Reload the page to reflect changes
-    header('Location: dashboard.php');
+    header('Location: index.php');
     exit();
 }
 
@@ -223,46 +187,53 @@ $total_pages = ceil($total_users / $items_per_page);
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
-                <form action="dashboard.php" method="POST" id="user_form">
-                    <button type="submit" name="delete" class="btn-trash" onclick="return confirm('Are you sure you want to delete the selected users?')">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </form>
             </div>
         </div>
 
         <!-- Table for Users -->
-        <table class="table">
-            <thead>
-                <tr>
-                    <th><input type="checkbox" id="select_all"></th>
-                    <th>Name / Email</th>
-                    <th>Role</th>
-                    <th>Last Login</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($users)): ?>
+        <form action="deleteUser.php" method="POST" id="user_form">
+            <div class="d-flex justify-content-end mb-3">
+                <!-- Delete Button -->
+                <button type="submit" name="delete" class="btn-trash" onclick="return confirm('Are you sure you want to delete the selected users?')">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+            <table class="table">
+                <thead>
                     <tr>
-                        <td colspan="5" class="text-center">No user found.</td>
+                        <th><input type="checkbox" id="select_all"></th>
+                        <th>Image</th>
+                        <th>Name / Email</th>
+                        <th>Role</th>
+                        <th>Last Login</th>
+                        <th>Notes</th>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($users as $user): ?>
+                </thead>
+                <tbody>
+                    <?php if (empty($users)): ?>
                         <tr>
-                            <td><input type="checkbox" name="user_ids[]" value="<?php echo $user['id']; ?>"></td>
-                            <td>
-                                <?php echo htmlspecialchars($user['name']); ?><br>
-                                <small><?php echo htmlspecialchars($user['email']); ?></small>
-                            </td>
-                            <td><?php echo htmlspecialchars($user['role']); ?></td>
-                            <td><?php echo htmlspecialchars($user['last_login']); ?></td>
-                            <td><?php echo htmlspecialchars($user['notes']); ?></td>
+                            <td colspan="6" class="text-center">No user found.</td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                    <?php else: ?>
+                        <?php foreach ($users as $user): ?>
+                            <tr>
+                                <td><input type="checkbox" name="user_ids[]" value="<?php echo $user['id']; ?>"></td>
+                                <td>
+                                    <img src="uploads/<?php echo htmlspecialchars($user['image']); ?>" alt="Profile Image" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                </td>
+                                <td>
+                                    <?php echo htmlspecialchars($user['name']); ?><br>
+                                    <small><?php echo htmlspecialchars($user['email']); ?></small>
+                                </td>
+                                <td><?php echo htmlspecialchars($user['role']); ?></td>
+                                <td><?php echo htmlspecialchars($user['last_login']); ?></td>
+                                <td><?php echo htmlspecialchars($user['notes']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </form>
 
         <!-- Pagination -->
         <div class="pagination">

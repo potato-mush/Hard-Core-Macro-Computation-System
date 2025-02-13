@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="card" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title text-center">Admin Login</h5>
-            <form action="login.php" method="POST">
+            <form action="index.php" method="POST">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control" id="username" name="username" required>

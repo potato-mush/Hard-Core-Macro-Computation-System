@@ -59,9 +59,9 @@
         <div class="section">
             <h2>Fitness Goal</h2>
             <div class="fitness-goal-buttons">
-                <button onclick="selectFitnessGoal('lose-weight')">Lose Weight</button>
-                <button onclick="selectFitnessGoal('gain-strength')">Gain Strength</button>
-                <button onclick="selectFitnessGoal('gain-muscle')">Gain Muscle</button>
+                <button onclick="selectFitnessGoal('Lose Weight')">Lose Weight</button>
+                <button onclick="selectFitnessGoal('Gain Strength')">Gain Strength</button>
+                <button onclick="selectFitnessGoal('Gain Muscle')">Gain Muscle</button>
             </div>
         </div>
 
@@ -69,10 +69,10 @@
         <div class="section">
             <h2>Fitness Level</h2>
             <div class="fitness-level-buttons">
-                <button onclick="selectFitnessLevel('novice')">Novice</button>
-                <button onclick="selectFitnessLevel('beginner')">Beginner</button>
-                <button onclick="selectFitnessLevel('intermediate')">Intermediate</button>
-                <button onclick="selectFitnessLevel('advanced')">Advanced</button>
+                <button onclick="selectFitnessLevel('Novice')">Novice</button>
+                <button onclick="selectFitnessLevel('Beginner')">Beginner</button>
+                <button onclick="selectFitnessLevel('Intermediate')">Intermediate</button>
+                <button onclick="selectFitnessLevel('Advanced')">Advanced</button>
             </div>
         </div>
 
@@ -211,19 +211,31 @@
             const weight = localStorage.getItem('weight');
             const height = localStorage.getItem('height');
             const muscleGroup = localStorage.getItem('muscle_group');
+            const userId = localStorage.getItem('user_id'); // Assuming user_id is stored in localStorage
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', 'functions/computation.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
-                    document.getElementById('carbInput').value = `${response.carbs} grams/day`;
-                    document.getElementById('proteinInput').value = `${response.protein} grams/day`;
-                    document.getElementById('fatsInput').value = `${response.fats} grams/day`;
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            console.log('Response Text:', xhr.responseText); // Log the response text
+                            const response = JSON.parse(xhr.responseText);
+                            document.getElementById('carbInput').value = `${response.carbs} grams/day`;
+                            document.getElementById('proteinInput').value = `${response.protein} grams/day`;
+                            document.getElementById('fatsInput').value = `${response.fats} grams/day`;
+                        } catch (e) {
+                            console.error('Error parsing JSON response:', e);
+                            alert('An error occurred while processing your request. Please try again.');
+                        }
+                    } else {
+                        console.error('Request failed with status:', xhr.status);
+                        alert('An error occurred while processing your request. Please try again.');
+                    }
                 }
             };
-            xhr.send(`gender=${gender}&age=${age}&fitness_goal=${fitnessGoal}&fitness_level=${fitnessLevel}&weight=${weight}&height=${height}&muscle_group=${muscleGroup}`);
+            xhr.send(`gender=${gender}&age=${age}&fitness_goal=${fitnessGoal}&fitness_level=${fitnessLevel}&weight=${weight}&height=${height}&muscle_group=${muscleGroup}&user_id=${userId}`);
         }
 
         function validateWeightHeightInputs() {
