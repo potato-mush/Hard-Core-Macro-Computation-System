@@ -210,6 +210,52 @@ body {
   background-size: auto 100%; /* Stretch text across the width */
 }
 
+.crossed-divider .tape span {
+    display: inline-block;
+    animation: scrollText 20s linear infinite;
+    padding-right: 50px;
+}
+
+/* Tape Movement */
+.crossed-divider .tape:first-child span {
+    display: inline-block;
+    animation: scrollTextLeft 20s linear infinite;
+    padding-right: 50px;
+}
+
+.crossed-divider .tape:last-child span {
+    display: inline-block;
+    animation: scrollTextRight 20s linear infinite;
+    padding-right: 50px;
+}
+
+@keyframes scrollTextLeft {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes scrollTextRight {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes scrollText {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
 /* What We Offer Section */
 .what-we-offer {
   position: relative;

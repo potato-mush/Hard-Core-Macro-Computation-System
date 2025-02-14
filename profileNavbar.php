@@ -6,7 +6,7 @@
     <div id="calculate" class="nav-item"><a href="calculate.php">Calculate</a></div>
     <div id="logout" class="nav-item">
         <form action="functions/logout.php" method="POST" style="display:inline;">
-            <button type="submit">Logout</button>
+            <button type="submit" class="nav-button">Logout</button>
         </form>
     </div>
 </div>

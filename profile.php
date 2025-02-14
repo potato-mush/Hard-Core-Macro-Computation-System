@@ -40,6 +40,7 @@ $food_energy_kj = $food_energy_calories * 4.184;
 
 <body>
     <?php include 'profileNavbar.php'; ?>
+    <div class="datetime-display" id="datetime-display"></div>
     <div class="profile-container">
         <div class="profile-info-container">
             <?php if ($section == 'profile'): ?>
@@ -53,6 +54,7 @@ $food_energy_kj = $food_energy_calories * 4.184;
                     </div>
                 </div>
                 <div class="nutrition-info">
+                    <h2 class="nutrition-header">Your Energy Needs</h2>
                     <div class="nutrition-row">
                         <div class="nutrition-label">Protein</div>
                         <div class="nutrition-data">
@@ -137,22 +139,42 @@ $food_energy_kj = $food_energy_calories * 4.184;
                 </div>
             <?php endif; ?>
         </div>
+        <?php if ($section == 'profile'): ?>
         <div class="real-time-info">
             <div class="meal-today">
                 <h2>Meal Today</h2>
-                <div id="meal-today-content">
-                    <!-- Meal today content will be loaded here -->
+                <div id="meal-today-content" class="meal-today-content">
+                    <!-- Meal items will be added here as todo items -->
                 </div>
             </div>
             <div class="workout-today">
                 <h2>Workout Today</h2>
-                <div id="workout-today-content">
-                    <!-- Workout today content will be loaded here -->
+                <div id="workout-today-content" class="workout-today-content">
+                    <!-- Workout items will be added here as todo items -->
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
     <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('datetime-display').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Update time every second
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Initial call
+
         function loadMeals() {
             const daySelect = document.getElementById('day-select');
             if (!daySelect) return; // Ensure the element exists
@@ -225,16 +247,17 @@ $food_energy_kj = $food_energy_calories * 4.184;
                     mealTodayContent.innerHTML = '';
                     const mealTypes = ['Breakfast', 'Snack (AM)', 'Lunch', 'Snack (PM)', 'Dinner', 'Optional Evening Snack'];
                     mealTypes.forEach(type => {
-                        const mealTypeDiv = document.createElement('div');
-                        mealTypeDiv.classList.add('meal-type');
-                        mealTypeDiv.innerHTML = `<h4>${type}</h4>`;
                         const meals = (data.meal_plan || []).filter(meal => meal.meal_type === type);
-                        meals.forEach(meal => {
-                            const mealItem = document.createElement('p');
-                            mealItem.textContent = `${meal.food_title}: ${meal.ingredients}`;
-                            mealTypeDiv.appendChild(mealItem);
-                        });
-                        mealTodayContent.appendChild(mealTypeDiv);
+                        if (meals.length > 0) {
+                            const typeHeader = document.createElement('h4');
+                            typeHeader.textContent = type;
+                            mealTodayContent.appendChild(typeHeader);
+                            
+                            meals.forEach(meal => {
+                                const todoItem = createTodoItem(`${meal.food_title}: ${meal.ingredients}`);
+                                mealTodayContent.appendChild(todoItem);
+                            });
+                        }
                     });
                 })
                 .catch(error => {
@@ -308,30 +331,45 @@ $food_energy_kj = $food_energy_calories * 4.184;
 
                     const workoutTodayContent = document.getElementById('workout-today-content');
                     workoutTodayContent.innerHTML = '';
-                    workoutTodayContent.innerHTML += `
-                        <h3>Warm-up</h3>
-                        <p>5-10 minutes of light cardio (jogging, cycling, or dynamic stretching)</p>
-                        <h3>Workout</h3>
-                    `;
-
-                    if (data.workouts.length === 0) {
-                        workoutTodayContent.innerHTML += `<p>No workouts found for your current status.</p>`;
-                    } else {
+                    
+                    const warmupItem = createTodoItem('5-10 minutes of light cardio (jogging, cycling, or dynamic stretching)');
+                    workoutTodayContent.appendChild(warmupItem);
+                    
+                    if (data.workouts && data.workouts.length > 0) {
                         data.workouts.forEach(workout => {
-                            const workoutItem = document.createElement('p');
-                            workoutItem.textContent = `${workout.workout_title} – ${workout.sets} sets x ${workout.reps} reps`;
-                            workoutTodayContent.appendChild(workoutItem);
+                            const todoItem = createTodoItem(`${workout.workout_title} – ${workout.sets} sets x ${workout.reps} reps`);
+                            workoutTodayContent.appendChild(todoItem);
                         });
                     }
-
-                    workoutTodayContent.innerHTML += `
-                        <h3>Cool-down</h3>
-                        <p>5-10 minutes of stretching (focus on ${data.status.muscle_group})</p>
-                    `;
+                    
+                    const cooldownItem = createTodoItem(`5-10 minutes of stretching (focus on ${data.status.muscle_group})`);
+                    workoutTodayContent.appendChild(cooldownItem);
                 })
                 .catch(error => {
                     console.error('Error loading workout today:', error);
                 });
+        }
+
+        function createTodoItem(text) {
+            const todoItem = document.createElement('div');
+            todoItem.className = 'todo-item';
+            
+            const checkbox = document.createElement('span');
+            checkbox.className = 'todo-checkbox';
+            
+            const todoText = document.createElement('span');
+            todoText.className = 'todo-text';
+            todoText.textContent = text;
+            
+            todoItem.appendChild(checkbox);
+            todoItem.appendChild(todoText);
+            
+            todoItem.addEventListener('click', () => {
+                todoItem.classList.toggle('completed');
+                checkbox.classList.toggle('checked');
+            });
+            
+            return todoItem;
         }
 
         // Load meals and workouts for today on page load
