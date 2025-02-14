@@ -35,10 +35,18 @@ body {
 }
 
 .profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   padding: 20px;
   width: 80%;
   margin: 20px auto;
   text-align: left; /* Align the text to the left */
+}
+
+.profile-info-container {
+  flex: 1;
+  margin-right: 20px;
 }
 
 .meal-plan-section,
@@ -100,4 +108,111 @@ body {
 
 .totals {
   margin-top: 20px;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.user-info {
+  color: #fff;
+}
+
+.profile-info,
+.nutrition-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  margin-right: 20px;
+}
+
+/* Nutrition Info */
+.nutrition-info {
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+}
+
+.nutrition-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.nutrition-label,
+.nutrition-data {
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  height: 50px;
+}
+
+.nutrition-label {
+  width: 150px;
+  background-color: #efeeef;
+  font-weight: bold;
+  z-index: 2 !important;
+  clip-path: polygon(0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%);
+  text-align: center;
+}
+
+.nutrition-data {
+  font-weight: bold;
+  margin-left: -10px;
+  text-align: center;
+  background-color: #e2ecda;
+  flex-grow: 1;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  clip-path: polygon(11% 50%, 0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.nutrition-range {
+  font-weight: normal;
+  color: #888;
+  font-size: 0.9em;
+  position: absolute;
+  right: 14px;
+  top: 55%;
+  transform: translateY(-50%);
+}
+
+.real-time-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0; /* Remove top margin */
+}
+
+.meal-today,
+.workout-today {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.meal-today h2,
+.workout-today h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.meal-today-content,
+.workout-today-content {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
 }
