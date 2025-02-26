@@ -1,40 +1,14 @@
 <?php
-// Include the database connection
-include('db.php');
-
-// Start the session
+include('functions/db.php');
 session_start();
 
-// Check if the user is logged in
 if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
     header('Location: index.php');
     exit();
 }
 
-// Pagination setup
-$items_per_page = 8;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$offset = ($page - 1) * $items_per_page;
-
-// Search functionality
-$search = isset($_GET['search']) ? '%' . $_GET['search'] . '%' : '%';
-
-// Count the total number of users
-$stmt_count = $pdo->prepare("SELECT COUNT(*) FROM tbl_users WHERE name LIKE :search OR email LIKE :search");
-$stmt_count->bindParam(':search', $search);
-$stmt_count->execute();
-$total_users = $stmt_count->fetchColumn();
-
-// Fetch users from tbl_users table with pagination
-$stmt = $pdo->prepare("SELECT * FROM tbl_users WHERE name LIKE :search OR email LIKE :search LIMIT :offset, :limit");
-$stmt->bindParam(':search', $search);
-$stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-$stmt->bindParam(':limit', $items_per_page, PDO::PARAM_INT);
-$stmt->execute();
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Calculate total pages
-$total_pages = ceil($total_users / $items_per_page);
+// Get the active section from URL parameter, default to users
+$active_section = isset($_GET['section']) ? $_GET['section'] : 'users';
 ?>
 
 <!DOCTYPE html>
@@ -49,6 +23,28 @@ $total_pages = ceil($total_users / $items_per_page);
     <!-- Font Awesome for Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        /* Add these new styles */
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            margin-left: 50px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+        }
+
+        .nav-links a.active {
+            background-color: #007bff;
+        }
+
+        .nav-links a:hover {
+            background-color: #555;
+        }
+
         /* Full-width container with margin */
         body {
             background-color: #f2f2f2;
@@ -160,103 +156,236 @@ $total_pages = ceil($total_users / $items_per_page);
             background-color: #ddd;
             pointer-events: none;
         }
+
+        .section-header {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+
+        .see-all-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .see-all-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
 <body>
-
-    <!-- Header Section with Logout Button -->
+    <!-- Modified Header Section -->
     <div class="header">
-        <h1>Admin Dashboard</h1>
+        <div class="d-flex align-items-center">
+            <h1>Admin Dashboard</h1>
+            <div class="nav-links">
+                <a href="?section=users" class="<?php echo $active_section == 'users' ? 'active' : ''; ?>">Users</a>
+                <a href="?section=workouts" class="<?php echo $active_section == 'workouts' ? 'active' : ''; ?>">Workouts</a>
+                <a href="?section=meals" class="<?php echo $active_section == 'meals' ? 'active' : ''; ?>">Meals</a>
+            </div>
+        </div>
         <a href="logout.php" class="btn btn-logout">Logout</a>
     </div>
 
     <div class="container mt-5">
-        <!-- Row for Add User Button, Search Bar, and Delete Button -->
-        <div class="d-flex justify-content-between mb-3">
-            <!-- Add User Button -->
-            <div>
-                <button class="btn btn-blue-no-radius text-white" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</button>
-            </div>
+        <?php
+        // Include the appropriate section content
+        switch ($active_section) {
+            case 'workouts':
+                include('sections/workouts_content.php');
+                break;
+            case 'meals':
+                include('sections/meals_content.php');
+                break;
+            default:
+                include('sections/users_content.php');
+        }
+        ?>
+    </div>
 
-            <!-- Search Bar and Delete Button at the right -->
-            <div class="d-flex gap-2">
-                <form action="dashboard.php" method="GET" class="d-flex">
-                    <input type="text" name="search" class="form-control" placeholder="Search users..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                    <button class="btn-search" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
+    <!-- Only keep Add Workout and Add Meal modals, remove Add User modal -->
+    <!-- Add Workout Modal -->
+    <div class="modal fade" id="addWorkoutModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Workout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="functions/addWorkout.php" method="POST">
+                        <div class="mb-3">
+                            <label for="workout_title" class="form-label">Workout Title</label>
+                            <input type="text" class="form-control" name="workout_title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="day_of_week" class="form-label">Day of Week</label>
+                            <select class="form-control" name="day_of_week" required>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fitness_level" class="form-label">Fitness Level</label>
+                            <select class="form-control" name="fitness_level" required>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sets" class="form-label">Sets</label>
+                            <input type="number" class="form-control" name="sets" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reps" class="form-label">Reps</label>
+                            <input type="number" class="form-control" name="reps" required>
+                        </div>
+                        <button type="submit" name="add_workout" class="btn btn-primary">Add Workout</button>
+                    </form>
+                </div>
             </div>
-        </div>
-
-        <!-- Table for Users -->
-        <form action="deleteUser.php" method="POST" id="user_form">
-            <div class="d-flex justify-content-end mb-3">
-                <!-- Delete Button -->
-                <button type="submit" name="delete" class="btn-trash" onclick="return confirm('Are you sure you want to delete the selected users?')">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" id="select_all"></th>
-                        <th>Image</th>
-                        <th>Name / Email</th>
-                        <th>Role</th>
-                        <th>Last Login</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($users)): ?>
-                        <tr>
-                            <td colspan="6" class="text-center">No user found.</td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($users as $user): ?>
-                            <tr>
-                                <td><input type="checkbox" name="user_ids[]" value="<?php echo $user['id']; ?>"></td>
-                                <td>
-                                    <img src="uploads/<?php echo htmlspecialchars($user['image']); ?>" alt="Profile Image" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                                </td>
-                                <td>
-                                    <?php echo htmlspecialchars($user['name']); ?><br>
-                                    <small><?php echo htmlspecialchars($user['email']); ?></small>
-                                </td>
-                                <td><?php echo htmlspecialchars($user['role']); ?></td>
-                                <td><?php echo htmlspecialchars($user['last_login']); ?></td>
-                                <td><?php echo htmlspecialchars($user['notes']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </form>
-
-        <!-- Pagination -->
-        <div class="pagination">
-            <a href="?page=1&search=<?php echo urlencode($_GET['search'] ?? ''); ?>" class="<?php echo ($page == 1) ? 'disabled' : ''; ?>">First</a>
-            <a href="?page=<?php echo ($page - 1) > 0 ? $page - 1 : 1; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>" class="<?php echo ($page == 1) ? 'disabled' : ''; ?>">Previous</a>
-            <span>Page <?php echo $page; ?> of <?php echo $total_pages; ?></span>
-            <a href="?page=<?php echo ($page + 1) <= $total_pages ? $page + 1 : $total_pages; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>" class="<?php echo ($page == $total_pages) ? 'disabled' : ''; ?>">Next</a>
-            <a href="?page=<?php echo $total_pages; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>" class="<?php echo ($page == $total_pages) ? 'disabled' : ''; ?>">Last</a>
         </div>
     </div>
 
-    <!-- Add User Modal -->
-    <?php include('addUser.php'); ?>
+    <!-- Add Meal Modal -->
+    <div class="modal fade" id="addMealModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Meal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="functions/addMeal.php" method="POST">
+                        <div class="mb-3">
+                            <label for="food_title" class="form-label">Food Title</label>
+                            <input type="text" class="form-control" name="food_title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="meal_type" class="form-label">Meal Type</label>
+                            <select class="form-control" name="meal_type" required>
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Dinner">Dinner</option>
+                                <option value="Snack">Snack</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="day_of_week" class="form-label">Day of Week</label>
+                            <select class="form-control" name="day_of_week" required>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="add_protein" class="form-label">Protein (g)</label>
+                                    <input type="number" class="form-control" name="protein" id="add_protein" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="add_carbohydrate" class="form-label">Carbs (g)</label>
+                                    <input type="number" class="form-control" name="carbohydrate" id="add_carbohydrate" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="add_fats" class="form-label">Fats (g)</label>
+                                    <input type="number" class="form-control" name="fats" id="add_fats" required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" name="add_meal" class="btn btn-primary">Add Meal</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include edit functions -->
+    <?php
+    require_once('functions/db.php');
+    include('functions/editWorkout.php');
+    include('functions/editMeal.php');
+    ?>
 
     <!-- Bootstrap 5 JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // JavaScript to handle the "select all" functionality
-        document.getElementById('select_all').addEventListener('click', function() {
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-        });
+        function editMeal(mealId) {
+            fetch(`functions/editMeal.php?id=${mealId}`)
+                .then(response => response.json())
+                .then(meal => {
+                    document.getElementById('edit_meal_id').value = meal.id;
+                    document.getElementById('edit_food_title').value = meal.food_title;
+                    document.getElementById('edit_meal_type').value = meal.meal_type;
+                    document.getElementById('edit_day_of_week').value = meal.day_of_week;
+                    document.getElementById('edit_ingredients').value = meal.ingredients;
+                    document.getElementById('edit_protein').value = meal.protein;
+                    document.getElementById('edit_carbohydrate').value = meal.carbohydrate;
+                    document.getElementById('edit_fats').value = meal.fats;
+
+                    new bootstrap.Modal(document.getElementById('editMealModal')).show();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function editWorkout(workoutId) {
+            fetch(`functions/editWorkout.php?id=${workoutId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(workout => {
+                    if (workout.error) {
+                        throw new Error(workout.error);
+                    }
+
+                    document.getElementById('edit_workout_id').value = workout.id;
+                    document.getElementById('edit_workout_title').value = workout.workout_title;
+                    document.getElementById('edit_workout_day').value = workout.day_of_week;
+                    document.getElementById('edit_fitness_level').value = workout.fitness_level;
+                    document.getElementById('edit_sets').value = workout.sets;
+                    document.getElementById('edit_reps').value = workout.reps;
+
+                    const modal = new bootstrap.Modal(document.getElementById('editWorkoutModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading workout data. Please try again.');
+                });
+        }
+
+        function changeWorkoutsPerPage(value) {
+            window.location.href = `?section=workouts&workout_page=1&workout_per_page=${value}`;
+        }
+
+        function changeUsersPerPage(value) {
+            window.location.href = `?section=users&user_page=1&user_per_page=${value}`;
+        }
+
+        function changeMealsPerPage(value) {
+            window.location.href = `?section=meals&meal_page=1&meal_per_page=${value}`;
+        }
     </script>
 </body>
 

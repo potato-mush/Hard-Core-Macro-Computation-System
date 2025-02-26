@@ -39,8 +39,10 @@
     <div class="crossed-divider">
         <div class="tape">
             <span>Stay Strong > Fight On > Never Stop > Keep Moving Forward > Be Unstoppable</span>
+            <span>Stay Strong > Fight On > Never Stop > Keep Moving Forward > Be Unstoppable</span>
         </div>
         <div class="tape">
+            <span>Stay Strong > Fight On > Never Stop > Keep Moving Forward > Be Unstoppable</span>
             <span>Stay Strong > Fight On > Never Stop > Keep Moving Forward > Be Unstoppable</span>
         </div>
     </div>

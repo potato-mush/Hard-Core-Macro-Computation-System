@@ -125,7 +125,7 @@ $food_energy_kj = $food_energy_calories * 4.184;
                             <option value="Thursday">Thursday</option>
                             <option value="Friday">Friday</option>
                             <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
+                            <option value="Sunday">Sunday (Rest Day)</option>
                         </select>
                     </div>
                     <div id="workout-plan-content" class="meal-plan-content">
@@ -227,42 +227,49 @@ $food_energy_kj = $food_energy_calories * 4.184;
                 });
         }
 
-        function loadMealToday() {
-            fetch(`functions/load_meals.php?day=${new Date().toLocaleDateString('en-US', { weekday: 'long' })}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                    console.log('Response Text:', text);
-                    const data = JSON.parse(text);
-                    if (data.error) {
-                        console.error('Error:', data.error);
-                        return;
-                    }
+        async function loadMealToday() {
+            try {
+                // Get todo states first
+                const todoStatesResponse = await fetch('functions/get_todo_states.php');
+                const todoStatesData = await todoStatesResponse.json();
+                const todoStates = todoStatesData.items || [];
 
-                    const mealTodayContent = document.getElementById('meal-today-content');
-                    mealTodayContent.innerHTML = '';
-                    const mealTypes = ['Breakfast', 'Snack (AM)', 'Lunch', 'Snack (PM)', 'Dinner', 'Optional Evening Snack'];
-                    mealTypes.forEach(type => {
-                        const meals = (data.meal_plan || []).filter(meal => meal.meal_type === type);
-                        if (meals.length > 0) {
-                            const typeHeader = document.createElement('h4');
-                            typeHeader.textContent = type;
-                            mealTodayContent.appendChild(typeHeader);
-                            
-                            meals.forEach(meal => {
-                                const todoItem = createTodoItem(`${meal.food_title}: ${meal.ingredients}`);
-                                mealTodayContent.appendChild(todoItem);
-                            });
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading meal today:', error);
+                // Then get meals
+                const response = await fetch(`functions/load_meals.php?day=${new Date().toLocaleDateString('en-US', { weekday: 'long' })}`);
+                const text = await response.text();
+                console.log('Response Text:', text);
+                const data = JSON.parse(text);
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                const mealTodayContent = document.getElementById('meal-today-content');
+                mealTodayContent.innerHTML = '';
+                const mealTypes = ['Breakfast', 'Snack (AM)', 'Lunch', 'Snack (PM)', 'Dinner', 'Optional Evening Snack'];
+                
+                mealTypes.forEach(type => {
+                    const meals = (data.meal_plan || []).filter(meal => meal.meal_type === type);
+                    if (meals.length > 0) {
+                        const typeHeader = document.createElement('h4');
+                        typeHeader.textContent = type;
+                        mealTodayContent.appendChild(typeHeader);
+                        
+                        meals.forEach(meal => {
+                            const mealText = `${meal.food_title}: ${meal.ingredients}`;
+                            // Find saved state for this meal
+                            const savedState = todoStates.find(item => 
+                                item.item_text === mealText && 
+                                item.item_type === 'meal'
+                            );
+                            const todoItem = createTodoItem(mealText, 'meal', savedState?.is_completed || false);
+                            mealTodayContent.appendChild(todoItem);
+                        });
+                    }
                 });
+            } catch (error) {
+                console.error('Error loading meal today:', error);
+            }
         }
 
         function loadWorkouts() {
@@ -270,6 +277,26 @@ $food_energy_kj = $food_energy_calories * 4.184;
             if (!daySelect) return; // Ensure the element exists
 
             const day = daySelect.value;
+            
+            // Handle Sunday separately
+            if (day === 'Sunday') {
+                const workoutPlanContent = document.getElementById('workout-plan-content');
+                workoutPlanContent.innerHTML = `
+                    <h3>Sunday - Rest Day</h3>
+                    <div class="rest-day-message">
+                        <p>Today is your designated rest day. Focus on:</p>
+                        <ul>
+                            <li>Getting adequate sleep</li>
+                            <li>Light stretching if desired</li>
+                            <li>Proper nutrition</li>
+                            <li>Mental recovery</li>
+                        </ul>
+                        <p>Remember: Rest days are essential for muscle recovery and preventing burnout!</p>
+                    </div>
+                `;
+                return;
+            }
+
             fetch(`functions/load_workouts.php?day=${day}`)
                 .then(response => {
                     if (!response.ok) {
@@ -313,49 +340,70 @@ $food_energy_kj = $food_energy_calories * 4.184;
                 });
         }
 
-        function loadWorkoutToday() {
-            fetch(`functions/load_workouts.php?day=${new Date().toLocaleDateString('en-US', { weekday: 'long' })}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                    console.log('Response Text:', text);
-                    const data = JSON.parse(text);
-                    if (data.error) {
-                        console.error('Error:', data.error);
-                        return;
-                    }
+        async function loadWorkoutToday() {
+            try {
+                // Get todo states first
+                const todoStatesResponse = await fetch('functions/get_todo_states.php');
+                const todoStatesData = await todoStatesResponse.json();
+                const todoStates = todoStatesData.items || [];
 
-                    const workoutTodayContent = document.getElementById('workout-today-content');
-                    workoutTodayContent.innerHTML = '';
-                    
-                    const warmupItem = createTodoItem('5-10 minutes of light cardio (jogging, cycling, or dynamic stretching)');
-                    workoutTodayContent.appendChild(warmupItem);
-                    
-                    if (data.workouts && data.workouts.length > 0) {
-                        data.workouts.forEach(workout => {
-                            const todoItem = createTodoItem(`${workout.workout_title} – ${workout.sets} sets x ${workout.reps} reps`);
-                            workoutTodayContent.appendChild(todoItem);
-                        });
-                    }
-                    
-                    const cooldownItem = createTodoItem(`5-10 minutes of stretching (focus on ${data.status.muscle_group})`);
-                    workoutTodayContent.appendChild(cooldownItem);
-                })
-                .catch(error => {
-                    console.error('Error loading workout today:', error);
-                });
+                // Then get workouts
+                const response = await fetch(`functions/load_workouts.php?day=${new Date().toLocaleDateString('en-US', { weekday: 'long' })}`);
+                const text = await response.text();
+                console.log('Response Text:', text);
+                const data = JSON.parse(text);
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                const workoutTodayContent = document.getElementById('workout-today-content');
+                workoutTodayContent.innerHTML = '';
+                
+                // Add warmup
+                const warmupText = '5-10 minutes of light cardio (jogging, cycling, or dynamic stretching)';
+                const savedWarmupState = todoStates.find(item => 
+                    item.item_text === warmupText && 
+                    item.item_type === 'workout'
+                );
+                const warmupItem = createTodoItem(warmupText, 'workout', savedWarmupState?.is_completed || false);
+                workoutTodayContent.appendChild(warmupItem);
+                
+                // Add workouts
+                if (data.workouts && data.workouts.length > 0) {
+                    data.workouts.forEach(workout => {
+                        const workoutText = `${workout.workout_title} – ${workout.sets} sets x ${workout.reps} reps`;
+                        const savedState = todoStates.find(item => 
+                            item.item_text === workoutText && 
+                            item.item_type === 'workout'
+                        );
+                        const todoItem = createTodoItem(workoutText, 'workout', savedState?.is_completed || false);
+                        workoutTodayContent.appendChild(todoItem);
+                    });
+                }
+                
+                // Add cooldown
+                const cooldownText = `5-10 minutes of stretching (focus on ${data.status.fitness_level})`;
+                const savedCooldownState = todoStates.find(item => 
+                    item.item_text === cooldownText && 
+                    item.item_type === 'workout'
+                );
+                const cooldownItem = createTodoItem(cooldownText, 'workout', savedCooldownState?.is_completed || false);
+                workoutTodayContent.appendChild(cooldownItem);
+            } catch (error) {
+                console.error('Error loading workout today:', error);
+            }
         }
 
-        function createTodoItem(text) {
+        function createTodoItem(text, type, isCompleted = false) {
             const todoItem = document.createElement('div');
             todoItem.className = 'todo-item';
+            if (isCompleted) {
+                todoItem.classList.add('completed');
+            }
             
             const checkbox = document.createElement('span');
-            checkbox.className = 'todo-checkbox';
+            checkbox.className = 'todo-checkbox' + (isCompleted ? ' checked' : '');
             
             const todoText = document.createElement('span');
             todoText.className = 'todo-text';
@@ -365,8 +413,22 @@ $food_energy_kj = $food_energy_calories * 4.184;
             todoItem.appendChild(todoText);
             
             todoItem.addEventListener('click', () => {
+                const newState = !todoItem.classList.contains('completed');
                 todoItem.classList.toggle('completed');
                 checkbox.classList.toggle('checked');
+                
+                // Save the state to the server
+                fetch('functions/save_todo_state.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        itemText: text,
+                        itemType: type,
+                        isCompleted: newState
+                    })
+                }).catch(error => console.error('Error saving todo state:', error));
             });
             
             return todoItem;

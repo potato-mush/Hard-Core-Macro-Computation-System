@@ -88,31 +88,28 @@
 
         <!-- Macro Ratio and Muscle Group Section -->
         <div class="section">
-            <h2>Macro Ratio and Muscle Group</h2>
-            <div class="macro-ratio">
-                <input type="text" placeholder="Carbohydrate grams/day" id="carbInput" disabled>
-                <input type="text" placeholder="Protein grams/day" id="proteinInput" disabled>
-                <input type="text" placeholder="Fats grams/day" id="fatsInput" disabled>
+            <h2>Muscle Group Selection</h2>
+            <div class="muscle-group-buttons">
+                <button onclick="selectMuscleGroup('Upper Body')">Upper Body</button>
+                <button onclick="selectMuscleGroup('Lower Body')">Lower Body</button>
+                <button onclick="selectMuscleGroup('Core')">Core</button>
+                <button onclick="selectMuscleGroup('Full Body')">Full Body</button>
             </div>
-            <button class="muscle-group-button" onclick="openModal()">Select Muscle Group</button>
+            <button class="confirmBtn" onclick="calculateAndShowMacros()">Calculate Macros</button>
         </div>
     </div>
 
-    <!-- Muscle Group Modal -->
+    <!-- Results Modal -->
     <div class="modal" id="muscleGroupModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal()"><i class="fas fa-times"></i></button>
-            <h3>Select Muscle Group</h3>
-            <div class="muscle-group-buttons">
-                <button onclick="selectMuscleGroup('Upper Body Push')">Upper Body Push</button>
-                <button onclick="selectMuscleGroup('Upper Body Pull')">Upper Body Pull</button>
-                <button onclick="selectMuscleGroup('Lower Body Push')">Lower Body Push</button>
-                <button onclick="selectMuscleGroup('Lower Body Pull')">Lower Body Pull</button>
-                <button onclick="selectMuscleGroup('Core')">Core</button>
-                <button onclick="selectMuscleGroup('Shoulders')">Shoulders</button>
-                <button onclick="selectMuscleGroup('Arms')">Arms</button>
-                <button onclick="selectMuscleGroup('Full Body')">Full Body</button>
+            <h3>Your Daily Macros</h3>
+            <div class="macro-results">
+                <input type="text" placeholder="Carbohydrate grams/day" id="carbInput" readonly>
+                <input type="text" placeholder="Protein grams/day" id="proteinInput" readonly>
+                <input type="text" placeholder="Fats grams/day" id="fatsInput" readonly>
             </div>
+            <button class="confirm-macros-btn" onclick="confirmAndRedirect()">Confirm & Continue</button>
         </div>
     </div>
 
@@ -197,10 +194,23 @@
         }
 
         function selectMuscleGroup(group) {
-            console.log('Selected Muscle Group:', group);
+            document.querySelectorAll('.muscle-group-buttons button').forEach(button => {
+                button.classList.remove('active');
+                if (button.textContent === group) {
+                    button.classList.add('active');
+                }
+            });
             localStorage.setItem('muscle_group', group);
-            closeModal();
+        }
+
+        function calculateAndShowMacros() {
             computeMacros();
+            openModal();
+        }
+
+        function confirmAndRedirect() {
+            // Save the final calculations if needed
+            window.location.href = 'profile.php';
         }
 
         function computeMacros() {

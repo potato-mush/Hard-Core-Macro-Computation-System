@@ -326,3 +326,68 @@ body {
 .modal-content button.active {
   background-color: #007bff;
 }
+
+.muscle-group-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.muscle-group-buttons button {
+  width: 80%;
+  padding: 20px;
+  margin: 0 auto;
+  background-color: #fffc04;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.muscle-group-buttons button:hover {
+  background-color: #f8ec9c;
+  transform: scale(1.02);
+}
+
+.muscle-group-buttons button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.macro-results {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.macro-results input {
+  padding: 15px;
+  border: 2px solid #fffc04;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  text-align: center;
+  background-color: #fff;
+  color: #000;
+  cursor: default;
+}
+
+.confirm-macros-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #fffc04;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-macros-btn:hover {
+  background-color: #f8ec9c;
+}
