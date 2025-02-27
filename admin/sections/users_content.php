@@ -127,8 +127,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <select class="form-control" name="role" required>
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
+                            <option value="basic">Basic Membership</option>
+                            <option value="standard">Standard Membership</option>
+                            <option value="premium">Premium Membership</option>
                         </select>
                     </div>
                     <div class="mb-3">

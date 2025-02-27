@@ -8,6 +8,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_user'])) {
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
+    
+    // Calculate expiration date based on membership type
+    $expiration_date = null;
+    switch($role) {
+        case 'Premium Membership':
+            $expiration_date = date('Y-m-d', strtotime('+1 year'));
+            break;
+        case 'Standard Membership':
+            $expiration_date = date('Y-m-d', strtotime('+6 months'));
+            break;
+        case 'Basic Membership':
+            $expiration_date = date('Y-m-d', strtotime('+3 months'));
+            break;
+        case 'Coach':
+            $expiration_date = date('Y-m-d', strtotime('+5 years')); // Long term for coaches
+            break;
+    }
 
     // Handle the image upload
     $image = 'default.jpg'; // Default image
@@ -21,16 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_user'])) {
     }
 
     // Insert new user into the database
-    $stmt = $pdo->prepare("INSERT INTO tbl_users (name, email, password, role, image) VALUES (:name, :email, :password, :role, :image)");
+    $stmt = $pdo->prepare("INSERT INTO tbl_users (name, email, password, role, image, expiration_date) VALUES (:name, :email, :password, :role, :image, :expiration_date)");
     $stmt->bindParam(':name', $name);
     $stmt->bindParam(':email', $email);
     $stmt->bindParam(':password', $password);
     $stmt->bindParam(':role', $role);
     $stmt->bindParam(':image', $image);
+    $stmt->bindParam(':expiration_date', $expiration_date);
     $stmt->execute();
 
     // Reload the page to reflect changes
-    header('Location: dashboard.php');
+    header('Location: ../dashboard.php');
     exit();
 }
 ?>

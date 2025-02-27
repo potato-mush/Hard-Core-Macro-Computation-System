@@ -4,7 +4,7 @@ session_start();
 
 function login($email, $password, $pdo) {
     // Prepare SQL statement to prevent SQL injection
-    $stmt = $pdo->prepare("SELECT * FROM tbl_users WHERE email = :email");
+    $stmt = $pdo->prepare("SELECT *, DATE_FORMAT(expiration_date, '%Y-%m-%d') as formatted_expiration_date FROM tbl_users WHERE email = :email");
     $stmt->bindParam(':email', $email);
     $stmt->execute();
 
@@ -12,6 +12,11 @@ function login($email, $password, $pdo) {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
+        // Check if membership has expired
+        if ($user['expiration_date'] && strtotime($user['expiration_date']) < time()) {
+            return 'Your membership has expired. Please renew your membership to continue.';
+        }
+
         // Verify the hashed password
         if (password_verify($password, $user['password'])) {
             // Password is correct, set session variables
@@ -19,6 +24,7 @@ function login($email, $password, $pdo) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_role'] = $user['role'];
+            $_SESSION['expiration_date'] = $user['formatted_expiration_date'];
 
             // Store user_id in localStorage
             echo "<script>localStorage.setItem('user_id', '{$user['id']}');</script>";

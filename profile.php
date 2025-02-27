@@ -13,9 +13,15 @@ require 'functions/conn.php';
 // Fetch user details from the database
 $user_id = $_SESSION['user_id'];
 
-$user_query = $pdo->prepare("SELECT image, email FROM tbl_users WHERE id = ?");
+// Update user query to include expiration_date
+$user_query = $pdo->prepare("SELECT image, email, expiration_date FROM tbl_users WHERE id = ?");
 $user_query->execute([$user_id]);
 $user_data = $user_query->fetch(PDO::FETCH_ASSOC);
+
+// Store expiration date in session if not already set
+if (!isset($_SESSION['expiration_date']) && isset($user_data['expiration_date'])) {
+    $_SESSION['expiration_date'] = $user_data['expiration_date'];
+}
 
 $status_query = $pdo->prepare("SELECT fitness_level, age, carbs, protein, fats FROM tbl_status WHERE user_id = ?");
 $status_query->execute([$user_id]);
@@ -36,11 +42,62 @@ $food_energy_kj = $food_energy_calories * 4.184;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <link rel="stylesheet" href="assets/styles/profile.css">
+    <style>
+        .datetime-container {
+            width: 80%;
+            margin: 0 auto 20px auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #dee807;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 1px solid #dee807;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .membership-expiration {
+            color: #dee807;
+            font-size: 0.9em;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .expiration-warning {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .expiration-normal {
+            color: #dee807;
+        }
+    </style>
 </head>
 
 <body>
     <?php include 'profileNavbar.php'; ?>
-    <div class="datetime-display" id="datetime-display"></div>
+    
+    <div class="datetime-container">
+        <?php if (isset($_SESSION['expiration_date'])): ?>
+            <div class="membership-expiration <?php 
+                $expiry_date = strtotime($_SESSION['expiration_date']);
+                $days_remaining = ceil(($expiry_date - time()) / (60 * 60 * 24));
+                echo $days_remaining <= 7 ? 'expiration-warning' : 'expiration-normal';
+            ?>">
+                <i class="fas fa-clock"></i>
+                <?php if ($days_remaining > 0): ?>
+                    Membership expires in <?php echo $days_remaining; ?> day(s)
+                <?php else: ?>
+                    Membership expired
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+        <div class="datetime-display" id="datetime-display"></div>
+    </div>
+
     <div class="profile-container">
         <div class="profile-info-container">
             <?php if ($section == 'profile'): ?>
@@ -140,20 +197,20 @@ $food_energy_kj = $food_energy_calories * 4.184;
             <?php endif; ?>
         </div>
         <?php if ($section == 'profile'): ?>
-        <div class="real-time-info">
-            <div class="meal-today">
-                <h2>Meal Today</h2>
-                <div id="meal-today-content" class="meal-today-content">
-                    <!-- Meal items will be added here as todo items -->
+            <div class="real-time-info">
+                <div class="meal-today">
+                    <h2>Meal Today</h2>
+                    <div id="meal-today-content" class="meal-today-content">
+                        <!-- Meal items will be added here as todo items -->
+                    </div>
+                </div>
+                <div class="workout-today">
+                    <h2>Workout Today</h2>
+                    <div id="workout-today-content" class="workout-today-content">
+                        <!-- Workout items will be added here as todo items -->
+                    </div>
                 </div>
             </div>
-            <div class="workout-today">
-                <h2>Workout Today</h2>
-                <div id="workout-today-content" class="workout-today-content">
-                    <!-- Workout items will be added here as todo items -->
-                </div>
-            </div>
-        </div>
         <?php endif; ?>
     </div>
     <script>
@@ -239,7 +296,7 @@ $food_energy_kj = $food_energy_calories * 4.184;
                 const text = await response.text();
                 console.log('Response Text:', text);
                 const data = JSON.parse(text);
-                
+
                 if (data.error) {
                     throw new Error(data.error);
                 }
@@ -247,19 +304,19 @@ $food_energy_kj = $food_energy_calories * 4.184;
                 const mealTodayContent = document.getElementById('meal-today-content');
                 mealTodayContent.innerHTML = '';
                 const mealTypes = ['Breakfast', 'Snack (AM)', 'Lunch', 'Snack (PM)', 'Dinner', 'Optional Evening Snack'];
-                
+
                 mealTypes.forEach(type => {
                     const meals = (data.meal_plan || []).filter(meal => meal.meal_type === type);
                     if (meals.length > 0) {
                         const typeHeader = document.createElement('h4');
                         typeHeader.textContent = type;
                         mealTodayContent.appendChild(typeHeader);
-                        
+
                         meals.forEach(meal => {
                             const mealText = `${meal.food_title}: ${meal.ingredients}`;
                             // Find saved state for this meal
-                            const savedState = todoStates.find(item => 
-                                item.item_text === mealText && 
+                            const savedState = todoStates.find(item =>
+                                item.item_text === mealText &&
                                 item.item_type === 'meal'
                             );
                             const todoItem = createTodoItem(mealText, 'meal', savedState?.is_completed || false);
@@ -277,7 +334,7 @@ $food_energy_kj = $food_energy_calories * 4.184;
             if (!daySelect) return; // Ensure the element exists
 
             const day = daySelect.value;
-            
+
             // Handle Sunday separately
             if (day === 'Sunday') {
                 const workoutPlanContent = document.getElementById('workout-plan-content');
@@ -352,40 +409,40 @@ $food_energy_kj = $food_energy_calories * 4.184;
                 const text = await response.text();
                 console.log('Response Text:', text);
                 const data = JSON.parse(text);
-                
+
                 if (data.error) {
                     throw new Error(data.error);
                 }
 
                 const workoutTodayContent = document.getElementById('workout-today-content');
                 workoutTodayContent.innerHTML = '';
-                
+
                 // Add warmup
                 const warmupText = '5-10 minutes of light cardio (jogging, cycling, or dynamic stretching)';
-                const savedWarmupState = todoStates.find(item => 
-                    item.item_text === warmupText && 
+                const savedWarmupState = todoStates.find(item =>
+                    item.item_text === warmupText &&
                     item.item_type === 'workout'
                 );
                 const warmupItem = createTodoItem(warmupText, 'workout', savedWarmupState?.is_completed || false);
                 workoutTodayContent.appendChild(warmupItem);
-                
+
                 // Add workouts
                 if (data.workouts && data.workouts.length > 0) {
                     data.workouts.forEach(workout => {
                         const workoutText = `${workout.workout_title} – ${workout.sets} sets x ${workout.reps} reps`;
-                        const savedState = todoStates.find(item => 
-                            item.item_text === workoutText && 
+                        const savedState = todoStates.find(item =>
+                            item.item_text === workoutText &&
                             item.item_type === 'workout'
                         );
                         const todoItem = createTodoItem(workoutText, 'workout', savedState?.is_completed || false);
                         workoutTodayContent.appendChild(todoItem);
                     });
                 }
-                
+
                 // Add cooldown
                 const cooldownText = `5-10 minutes of stretching (focus on ${data.status.fitness_level})`;
-                const savedCooldownState = todoStates.find(item => 
-                    item.item_text === cooldownText && 
+                const savedCooldownState = todoStates.find(item =>
+                    item.item_text === cooldownText &&
                     item.item_type === 'workout'
                 );
                 const cooldownItem = createTodoItem(cooldownText, 'workout', savedCooldownState?.is_completed || false);
@@ -401,22 +458,22 @@ $food_energy_kj = $food_energy_calories * 4.184;
             if (isCompleted) {
                 todoItem.classList.add('completed');
             }
-            
+
             const checkbox = document.createElement('span');
             checkbox.className = 'todo-checkbox' + (isCompleted ? ' checked' : '');
-            
+
             const todoText = document.createElement('span');
             todoText.className = 'todo-text';
             todoText.textContent = text;
-            
+
             todoItem.appendChild(checkbox);
             todoItem.appendChild(todoText);
-            
+
             todoItem.addEventListener('click', () => {
                 const newState = !todoItem.classList.contains('completed');
                 todoItem.classList.toggle('completed');
                 checkbox.classList.toggle('checked');
-                
+
                 // Save the state to the server
                 fetch('functions/save_todo_state.php', {
                     method: 'POST',
@@ -430,7 +487,7 @@ $food_energy_kj = $food_energy_calories * 4.184;
                     })
                 }).catch(error => console.error('Error saving todo state:', error));
             });
-            
+
             return todoItem;
         }
 
