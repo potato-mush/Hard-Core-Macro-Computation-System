@@ -112,6 +112,19 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="modal-body">
                 <form action="functions/addUser.php" method="POST" enctype="multipart/form-data">
+                    <div class="mb-4 text-center position-relative">
+                        <div class="profile-pic-wrapper">
+                            <div class="pic-holder">
+                                <img id="profilePic" class="pic" src="uploads/default.jpg">
+                                <input type="file" name="image" id="newProfilePhoto" class="upload-file-input" accept="image/*"/>
+                                <label for="newProfilePhoto" class="upload-file-label">
+                                    <span class="camera-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
                         <input type="text" class="form-control" name="name" required>
@@ -127,14 +140,11 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <select class="form-control" name="role" required>
-                            <option value="basic">Basic Membership</option>
-                            <option value="standard">Standard Membership</option>
-                            <option value="premium">Premium Membership</option>
+                            <option value="Premium Membership">Premium Membership</option>
+                            <option value="Standard Membership">Standard Membership</option>
+                            <option value="Basic Membership">Basic Membership</option>
+                            <option value="Coach">Coach</option>
                         </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Profile Image</label>
-                        <input type="file" class="form-control" name="image" accept="image/*">
                     </div>
                     <button type="submit" name="add_user" class="btn btn-primary">Add User</button>
                 </form>
@@ -142,3 +152,69 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </div>
+
+<style>
+.profile-pic-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.pic-holder {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    overflow: hidden;
+}
+
+.pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-file-input {
+    display: none;
+}
+
+.upload-file-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pic-holder:hover .upload-file-label {
+    opacity: 1;
+}
+
+.camera-icon {
+    color: white;
+    font-size: 24px;
+}
+</style>
+
+<script>
+document.getElementById('newProfilePhoto').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('profilePic').src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>

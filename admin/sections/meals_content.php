@@ -43,7 +43,7 @@ $meals = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </td>
                 <td>
                     <button class="btn btn-sm btn-primary" onclick="editMeal(<?php echo $meal['id']; ?>)">Edit</button>
-                    <button class="btn btn-sm btn-danger">Delete</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteMeal(<?php echo $meal['id']; ?>)">Delete</button>
                 </td>
             </tr>
             <?php endforeach; ?>
@@ -102,4 +102,67 @@ $meals = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </ul>
         </nav>
     </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteMealModal" tabindex="-1" aria-labelledby="deleteMealModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteMealModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this meal?
+                </div>  
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let deleteModal;
+    let mealToDelete = null;
+
+    // Initialize after DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        deleteModal = new bootstrap.Modal(document.getElementById('deleteMealModal'));
+        
+        // Add event listener for delete confirmation
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (mealToDelete) {
+                fetch('functions/deleteMeal.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'meal_id=' + mealToDelete
+                })
+                .then(response => response.text())
+                .then(result => {
+                    deleteModal.hide();
+                    if (result === 'success') {
+                        location.reload();
+                    } else {
+                        alert('Error deleting meal');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    deleteModal.hide();
+                    alert('Error deleting meal');
+                });
+            }
+        });
+    });
+
+    function deleteMeal(mealId) {
+        mealToDelete = mealId;
+        if (deleteModal) {
+            deleteModal.show();
+        }
+    }
+    </script>
 </div>

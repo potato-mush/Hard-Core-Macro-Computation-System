@@ -1,15 +1,13 @@
 <?php
-// Include the database connection
 include('db.php');
 
-// Handle the add user action (if add user form is submitted)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_user'])) {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
     
-    // Calculate expiration date based on membership type
+    // Calculate expiration date based on role
     $expiration_date = null;
     switch($role) {
         case 'Premium Membership':
@@ -26,29 +24,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_user'])) {
             break;
     }
 
-    // Handle the image upload
-    $image = 'default.jpg'; // Default image
-    if (isset($_FILES['profileImage']) && $_FILES['profileImage']['error'] == UPLOAD_ERR_OK) {
-        $imageTmpPath = $_FILES['profileImage']['tmp_name'];
-        $imageName = uniqid() . '-' . $_FILES['profileImage']['name'];
-        $imageUploadPath = 'uploads/' . $imageName;
-        if (move_uploaded_file($imageTmpPath, $imageUploadPath)) {
-            $image = $imageName;
+    // Handle image upload
+    $image = 'default.jpg';
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+        $filename = $_FILES['image']['name'];
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        if (in_array($ext, $allowed)) {
+            $newname = uniqid() . '.' . $ext;
+            if (move_uploaded_file($_FILES['image']['tmp_name'], '../uploads/' . $newname)) {
+                $image = $newname;
+            }
         }
     }
 
-    // Insert new user into the database
-    $stmt = $pdo->prepare("INSERT INTO tbl_users (name, email, password, role, image, expiration_date) VALUES (:name, :email, :password, :role, :image, :expiration_date)");
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':password', $password);
-    $stmt->bindParam(':role', $role);
-    $stmt->bindParam(':image', $image);
-    $stmt->bindParam(':expiration_date', $expiration_date);
-    $stmt->execute();
-
-    // Reload the page to reflect changes
-    header('Location: ../dashboard.php');
+    try {
+        // Insert new user into the database
+        $stmt = $pdo->prepare("INSERT INTO tbl_users (name, email, password, role, image, expiration_date) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $email, $password, $role, $image, $expiration_date]);
+        
+        $_SESSION['message'] = "User added successfully!";
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Error adding user: " . $e->getMessage();
+    }
+    
+    header('Location: ../dashboard.php?section=users');
     exit();
 }
 ?>

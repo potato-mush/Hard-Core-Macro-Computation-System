@@ -1,12 +1,25 @@
 <?php
+include('db.php');
+
+// Only start session if it hasn't been started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+    header('Location: ../login.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_meal'])) {
-    $food_title = $_POST['food_title'];
-    $meal_type = $_POST['meal_type'];
-    $ingredients = $_POST['ingredients'];
-    $protein = $_POST['protein'];
-    $carbohydrate = $_POST['carbohydrate'];
-    $fats = $_POST['fats'];
-    $day_of_week = $_POST['day_of_week'];
+    // Sanitize inputs
+    $food_title = filter_input(INPUT_POST, 'food_title', FILTER_SANITIZE_STRING);
+    $meal_type = filter_input(INPUT_POST, 'meal_type', FILTER_SANITIZE_STRING);
+    $ingredients = filter_input(INPUT_POST, 'ingredients', FILTER_SANITIZE_STRING);
+    $protein = filter_input(INPUT_POST, 'protein', FILTER_SANITIZE_NUMBER_FLOAT);
+    $carbohydrate = filter_input(INPUT_POST, 'carbohydrate', FILTER_SANITIZE_NUMBER_FLOAT);
+    $fats = filter_input(INPUT_POST, 'fats', FILTER_SANITIZE_NUMBER_FLOAT);
+    $day_of_week = filter_input(INPUT_POST, 'day_of_week', FILTER_SANITIZE_STRING);
 
     $stmt = $pdo->prepare("INSERT INTO tbl_meals (food_title, meal_type, ingredients, protein, carbohydrate, fats, day_of_week) 
                           VALUES (:title, :type, :ingredients, :protein, :carbs, :fats, :day)");

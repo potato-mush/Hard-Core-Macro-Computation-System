@@ -1,4 +1,15 @@
 <?php
+require_once('db.php');
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+    header('Location: ../login.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_workout'])) {
     $workout_title = $_POST['workout_title'];
     $day_of_week = $_POST['day_of_week'];
