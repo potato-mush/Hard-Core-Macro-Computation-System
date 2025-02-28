@@ -1,14 +1,23 @@
 <?php
-$host = 'localhost';  // Database host
-$dbname = 'hardcore';  // Your database name
-$username = 'root';  // Your database username
-$password = '';  // Your database password
+ob_start();
+$host = 'localhost';
+$dbname = 'hardcore';
+$username = 'root';
+$password = '';
 
-// Create a new PDO instance to connect to the database
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = new PDO(
+        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
+        $username,
+        $password,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]
+    );
 } catch (PDOException $e) {
-    die("Could not connect to the database: " . $e->getMessage());
+    ob_clean();
+    header('Content-Type: application/json');
+    die(json_encode(['status' => 'error', 'message' => 'Database connection failed']));
 }
 ?>

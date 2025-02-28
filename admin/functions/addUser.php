@@ -11,13 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_user'])) {
     $expiration_date = null;
     switch($role) {
         case 'Premium Membership':
-            $expiration_date = date('Y-m-d', strtotime('+1 year'));
-            break;
-        case 'Standard Membership':
             $expiration_date = date('Y-m-d', strtotime('+6 months'));
             break;
-        case 'Basic Membership':
+        case 'Standard Membership':
             $expiration_date = date('Y-m-d', strtotime('+3 months'));
+            break;
+        case 'Basic Membership':
+            $expiration_date = date('Y-m-d', strtotime('+1 month'));
             break;
         case 'Coach':
             $expiration_date = date('Y-m-d', strtotime('+5 years')); // Long term for coaches

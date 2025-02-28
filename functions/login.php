@@ -34,7 +34,18 @@ function login($email, $password, $pdo) {
             $stmt->bindParam(':id', $user['id']);
             $stmt->execute();
 
-            // Redirect to index.php
+            // Check if user exists in tbl_status
+            $statusStmt = $pdo->prepare("SELECT id FROM tbl_status WHERE user_id = :user_id LIMIT 1");
+            $statusStmt->bindParam(':user_id', $user['id']);
+            $statusStmt->execute();
+            
+            if (!$statusStmt->fetch()) {
+                // User doesn't exist in tbl_status, redirect to calculate.php
+                header('Location: calculate.php');
+                exit();
+            }
+
+            // User exists in tbl_status, redirect to index.php
             header('Location: index.php');
             exit();
         } else {

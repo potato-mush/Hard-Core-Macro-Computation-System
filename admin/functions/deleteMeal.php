@@ -14,7 +14,7 @@ if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['meal_id'])) {
     try {
         $meal_id = filter_var($_POST['meal_id'], FILTER_SANITIZE_NUMBER_INT);
-        
+            
         $stmt = $pdo->prepare("DELETE FROM tbl_meals WHERE id = :id");
         $stmt->bindParam(':id', $meal_id);
         

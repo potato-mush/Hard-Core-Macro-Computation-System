@@ -1,3 +1,16 @@
+<?php
+include('functions/conn.php');
+session_start();
+
+// Check if user exists in tbl_status
+$showBackButton = false;
+if (isset($_SESSION['user_id'])) {
+    $stmt = $pdo->prepare("SELECT id FROM tbl_status WHERE user_id = :user_id LIMIT 1");
+    $stmt->bindParam(':user_id', $_SESSION['user_id']);
+    $stmt->execute();
+    $showBackButton = $stmt->fetch() ? true : false;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,9 +24,11 @@
 
 <body>
     <div class="header">
+        <?php if ($showBackButton): ?>
         <a href="index.php" class="back-button">
             <i class="fas fa-arrow-left"></i>
         </a>
+        <?php endif; ?>
         <h1>Hard Core Macro Computation System</h1>
     </div>
 

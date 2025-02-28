@@ -27,6 +27,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Name / Email</th>
                 <th>Role</th>
                 <th>Last Login</th>
+                <th>Expiration Date</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +45,21 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </td>
                 <td><?php echo htmlspecialchars($user['role']); ?></td>
                 <td><?php echo htmlspecialchars($user['last_login']); ?></td>
+                <td>
+                    <?php 
+                    $expiration = new DateTime($user['expiration_date']);
+                    $now = new DateTime();
+                    $status_class = $expiration < $now ? 'text-danger' : 'text-success';
+                    echo '<span class="' . $status_class . '">' . htmlspecialchars($user['expiration_date']) . '</span>';
+                    ?>
+                </td>
+                <td>
+                    <button class="btn btn-success btn-sm" 
+                            onclick="showRenewalModal(<?php echo $user['id']; ?>, '<?php echo $user['role']; ?>')"
+                            <?php echo ($user['role'] === 'Coach' ? 'disabled' : ''); ?>>
+                        Renew
+                    </button>
+                </td>
             </tr>
             <?php endforeach; ?>
         </tbody>
@@ -153,6 +170,33 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
+<!-- Add Renewal Modal -->
+<div class="modal fade" id="renewalModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Renew Membership</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="renewalForm" action="functions/renewMembership.php" method="POST">
+                    <input type="hidden" name="user_id" id="renewal_user_id">
+                    <input type="hidden" name="current_role" id="current_role">
+                    <div class="mb-3">
+                        <label for="renewal_type" class="form-label">Membership Type</label>
+                        <select class="form-control" name="renewal_type" id="renewal_type" required>
+                            <option value="Basic">Basic Membership (1 Month)</option>
+                            <option value="Standard">Standard Membership (3 Months)</option>
+                            <option value="Premium">Premium Membership (6 Months)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Renew Membership</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
 .profile-pic-wrapper {
     width: 100%;
@@ -217,4 +261,10 @@ document.getElementById('newProfilePhoto').addEventListener('change', function(e
         reader.readAsDataURL(file);
     }
 });
+
+function showRenewalModal(userId, role) {
+    document.getElementById('renewal_user_id').value = userId;
+    document.getElementById('current_role').value = role;
+    new bootstrap.Modal(document.getElementById('renewalModal')).show();
+}
 </script>

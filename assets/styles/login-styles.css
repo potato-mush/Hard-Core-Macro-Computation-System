@@ -1,161 +1,558 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-image: url('../images/bg1.png');
-    margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("../images/bg1.png");
+  margin: 0;
 }
 
 /* Both form boxes (left and right) */
 .form-box {
-    width: 24rem;
-    padding: 60px;
-    background-color: #fff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 2px dashed #000;
-    position: relative;
-    transition: transform 0.5s ease;
+  width: 24rem;
+  padding: 60px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px dashed #000;
+  position: relative;
+  transition: transform 0.5s ease;
 }
 
 .form-box h2 {
-    text-align: center;
-    margin-bottom: 10px;
-    color: #333;
-    font-size: 2rem;
+  text-align: center;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 2rem;
 }
 
 .form-box p {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #666;
-    font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 1.1rem;
 }
 
 .form-box form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-box label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
 }
 
 .form-box input {
-    font-size: 18px;
-    padding: 14px;
-    margin-bottom: 15px;
-    border: 1px solid #000;
-    width: 100%;
-    box-sizing: border-box;
+  font-size: 18px;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #000;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-box button {
-    text-transform: uppercase;
-    padding: 14px 60px;
-    background-color: #FAFF06;
-    color: black;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    align-self: center;
+  text-transform: uppercase;
+  padding: 14px 60px;
+  background-color: #faff06;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  align-self: center;
 }
 
 .form-box button:hover {
-    background-color: #d8dc07;
+  background-color: #d8dc07;
 }
 
 .form-box a {
-    text-align: right;
-    margin: 14px 0;
-    color: #007bff;
-    text-decoration: none;
-    font-size: 14px;
+  text-align: right;
+  margin: 14px 0;
+  color: #007bff;
+  text-decoration: none;
+  font-size: 14px;
 }
 
 .form-box a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .form-box .form-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
+  display: flex;
+  gap: 10px;
+  width: 100%;
 }
 
 .form-box .form-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 }
 
 .form-box .form-footer label {
-    font-size: 14px;
-    color: #555;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    white-space: nowrap;
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .form-box .form-footer input {
-    margin-top: 14px;
-    margin-right: 5px;
+  margin-top: 14px;
+  margin-right: 5px;
 }
 
 .password-wrapper {
-    position: relative;
+  position: relative;
 }
 
 .password-wrapper input[type="password"],
 .password-wrapper input[type="text"] {
-    padding: 14px;
-    margin-bottom: 15px;
-    border: 1px solid #000;
-    width: 100%;
-    padding-right: 50px;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 1px solid #000;
+  width: 100%;
+  padding-right: 50px;
 }
 
 .toggle-password {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 18px;
-    color: #888;
-    cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
 }
 
 .toggle-password:hover {
-    color: #555;
+  color: #555;
 }
 
 .terms-checkbox {
-    display: flex;
-    align-items: center;
-    margin: 10px 0;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
 }
 
 .terms-checkbox input {
-    margin: 8px;
+  margin: 8px;
 }
 
 .terms-checkbox label {
-    font-size: 14px;
-    color: #555;
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
+  font-size: 14px;
+  color: #555;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .terms-checkbox a {
-    color: #007bff;
-    text-decoration: none;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 40px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.modal-content h2 {
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.modal-content p {
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+#forgotPasswordForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#forgotPasswordForm input[type="email"] {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+#forgotPasswordForm input[type="email"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+#forgotPasswordForm button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+#forgotPasswordForm button:hover {
+  background-color: #0056b3;
+}
+
+.close-modal {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 28px;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-modal:hover {
+  color: #333;
+  background-color: #f0f0f0;
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+}
+
+.error-message {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 0, 0, 0.8);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 1.2rem;
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+.back-button {
+  display: block;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  text-decoration: none;
+  color: #007bff;
+  font-size: 16px;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
+.success-message {
+  display: none;
+  background-color: rgba(0, 255, 0, 0.8);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Add new styles for token and password modals */
+#tokenVerificationForm,
+#newPasswordForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#tokenVerificationForm input[type="text"],
+#newPasswordForm input[type="password"] {
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#tokenVerificationForm input[type="text"]:focus,
+#newPasswordForm input[type="password"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+#tokenVerificationForm button,
+#newPasswordForm button {
+  background-color: #007bff;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+#tokenVerificationForm button:hover,
+#newPasswordForm button:hover {
+  background-color: #0056b3;
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.modal-header h2 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.modal-header p {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.password-requirements {
+  font-size: 12px;
+  color: #666;
+  margin-top: -10px;
+  padding-left: 5px;
+}
+
+/* Add new password modal specific styles */
+.password-field-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.password-field-group .toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  padding: 5px;
+}
+
+.password-field-group .toggle-password:hover {
+  color: #333;
+}
+
+.password-strength {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #666;
+}
+
+.password-strength.weak {
+  color: #dc3545;
+}
+.password-strength.medium {
+  color: #ffc107;
+}
+.password-strength.strong {
+  color: #28a745;
+}
+
+.password-requirements {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-size: 13px;
+}
+
+.password-requirements ul {
+  margin: 10px 0 0 20px;
+  padding: 0;
+  color: #666;
+}
+
+.password-requirements li {
+  margin-bottom: 5px;
+}
+
+.password-requirements li.met {
+  color: #28a745;
+}
+
+#newPasswordForm button[type="submit"] {
+  margin-top: 20px;
+  background: linear-gradient(to right, #007bff, #0056b3);
+  transition: transform 0.2s;
+}
+
+#newPasswordForm button[type="submit"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced Password Input Styles */
+.password-field-group {
+  position: relative;
+  margin-bottom: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.password-field-group:focus-within {
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.password-field-group input[type="password"],
+.password-field-group input[type="text"] {
+  border: 2px solid #e0e0e0;
+  background: #fff;
+  padding: 15px 45px 15px 15px;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.password-field-group input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.password-field-group .toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6c757d;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.password-field-group .toggle-password:hover {
+  color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.password-strength {
+  margin-top: 8px;
+  padding: 5px 10px;
+  font-size: 13px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.password-strength.weak {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.password-strength.medium {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.password-strength.strong {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+}
+
+.password-requirements {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.password-requirements ul {
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.password-requirements li {
+  margin: 8px 0;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+
+.password-requirements li:before {
+  content: '•';
+  color: #dc3545;
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.password-requirements li.met:before {
+  content: '✓';
+  color: #28a745;
 }
